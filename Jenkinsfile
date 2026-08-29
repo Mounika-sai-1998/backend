@@ -10,7 +10,7 @@ pipeline {
     }
     environment {
         def appVersion = ''
-        def nexusUrl = "32.197.164.123:8081"
+        nexusUrl = '32.197.164.123:8081'
     }
     stages {
         stage('Read Version') {
@@ -62,7 +62,16 @@ pipeline {
                 }
             }
         }
-        
+        stage('Deploy') {
+            steps {
+                script {
+                    def params = [
+                    string(name: 'appVersion', value: "${appVersion}")
+                ]
+                    build job: 'backend-deploy', parameters: params, wait: false
+                }
+            }
+        }
     }
     post {
         always {
