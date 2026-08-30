@@ -10,7 +10,7 @@ pipeline {
     }
     environment {
         def appVersion = ''
-        nexusUrl = '32.197.164.123:8081'
+        nexusUrl = 'nexus.lokesh.shop:8081'
     }
     stages {
         stage('Read Version') {
