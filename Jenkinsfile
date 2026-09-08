@@ -8,6 +8,9 @@ pipeline {
         disableConcurrentBuilds()
         ansiColor('xterm')
     }
+    parameters {
+        booleanParam(name: 'Deploy', defaultValue: false, description: 'Do you want to deploy the application?')
+    }
     environment {
         def appVersion = ''
         nexusUrl = 'nexus.lokesh.shop:8081'
@@ -41,18 +44,18 @@ pipeline {
             }
         }
 
-        stage('Sonar Scan'){
-            environment {
-                scannerHome = tool 'sonar-8.1' //referring scanner CLI
-            }
-            steps {
-                script {
-                    withSonarQubeEnv('sonar-8.1') { //referring sonar server
-                        sh "${scannerHome}/bin/sonar-scanner"
-                    }
-                }
-            }
-        }
+        // stage('Sonar Scan'){
+        //     environment {
+        //         scannerHome = tool 'sonar-8.1' //referring scanner CLI
+        //     }
+        //     steps {
+        //         script {
+        //             withSonarQubeEnv('sonar-8.1') { //referring sonar server
+        //                 sh "${scannerHome}/bin/sonar-scanner"
+        //             }
+        //         }
+        //     }
+        // }
 
         stage('nexus artifact upload'){
             steps{
@@ -77,6 +80,11 @@ pipeline {
             }
         }
         stage('Deploy') {
+            when {
+                expression {
+                    params.Deploy
+                }
+            }
             steps {
                 script {
                     def params = [
